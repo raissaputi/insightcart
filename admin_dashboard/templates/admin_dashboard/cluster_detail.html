@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Produk Cluster {{ cluster_id }} - InsightCart{% endblock %}
+
+{% block header %}Produk dalam Cluster {{ cluster_id }}{% endblock %}
+
+{% block content %}
+    {% if products %}
+        <div class="grid-container">
+            {% for item in products %}
+                <div class="cluster-card">
+                    <strong>{{ item.item }}</strong><br>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center;">Tidak ada produk dalam cluster ini.</p>
+    {% endif %}
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a class="btn-link" href="/dashboard/">← Kembali ke Daftar Cluster</a>
+    </div>
+{% endblock %}

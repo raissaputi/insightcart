@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Cluster Summary - InsightCart{% endblock %}
+
+{% block header %}Cluster Transaksi Pelanggan{% endblock %}
+
+{% block content %}
+    {% if clusters_data %}
+        <div class="grid-container">
+            {% for cluster in clusters_data %}
+                <div class="cluster-card">
+                    <div class="cluster-info">
+                        <strong>Cluster {{ cluster.cluster }}</strong>
+                        <p>Total Transaksi: {{ cluster.total_transactions }}</p>
+                        <p>Avg Spending: {{ cluster.avg_spending|floatformat:2 }}</p>
+                    </div>
+                    <a class="btn-link" href="/dashboard/cluster-detail/?id={{ cluster.cluster_fullname|urlencode }}">Lihat Produk</a>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center;">Data cluster tidak tersedia.</p>
+    {% endif %}
+{% endblock %}

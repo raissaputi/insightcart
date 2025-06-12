@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block title %}Rekomendasi untuk {{ item_name }}{% endblock %}
+{% block header %}Rekomendasi untuk: {{ item_name }}{% endblock %}
+
+{% block content %}
+    {% if recommendations %}
+        <div class="grid-container">
+            {% for r in recommendations %}
+                <div class="cluster-card">
+                    <strong>{{ r.recommend }}</strong>
+                    <p>Confidence: {{ r.confidence|floatformat:2 }}</p>
+                    <p>Lift: {{ r.lift|floatformat:2 }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p style="text-align: center;">Tidak ada rekomendasi ditemukan.</p>
+    {% endif %}
+
+    <div style="text-align: center; margin-top: 30px;">
+        <a class="btn-link" href="/recommend/cluster-detail">← Kembali ke Daftar Produk</a>
+    </div>
+{% endblock %}

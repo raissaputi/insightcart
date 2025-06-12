@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Produk Rekomendasi{% endblock %}
+{% block header %}Temukan Produk Favorit dari Pelanggan Lain!{% endblock %}
+
+{% block content %}
+  <form method="get" style="text-align: center; margin-bottom: 30px;">
+      <label for="cluster_id"><strong>Lihat produk favorit pelanggan seperti:</strong></label>
+      <select name="id" id="cluster_id" onchange="this.form.submit()" style="padding: 8px 12px; margin-left: 10px;">
+          {% for c in clusters %}
+              <option value="{{ c }}" {% if c == selected_cluster %}selected{% endif %}>{{ c }}</option>
+          {% endfor %}
+      </select>
+  </form>
+
+  {% if items %}
+      <div class="grid-container">
+          {% for item in items %}
+              <div class="cluster-card">
+                  <strong>{{ item }}</strong>
+                  <button class="btn-link" onclick="showModal('{{ item|escapejs }}')">Beli</button>
+              </div>
+          {% endfor %}
+      </div>
+  {% else %}
+      <p style="text-align: center;">Tidak ada produk ditemukan dalam cluster ini.</p>
+  {% endif %}
+
+ <!-- Modal -->
+<div id="recommendationModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%;
+     background-color:rgba(0,0,0,0.5); z-index:999;">
+  <div style="
+       background:#fff;
+       margin:5% auto;
+       padding:30px 20px 20px;
+       border-radius:16px; 
+       width:90%;
+       max-width:600px;
+       position:relative;
+       max-height:80vh;
+       overflow-y:auto;
+       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  ">
+      <!-- Tombol Close -->
+      <button onclick="closeModal()" style="
+          position:absolute;
+          top:10px;
+          right:16px;
+          background:none;
+          border:none;
+          font-size:24px;
+          font-weight: bold;
+          color: #333;
+          cursor:pointer;">×</button>
+
+      <h2 style="margin-top: 0; color: #1f3b77;">Produk ini sering dibeli bersama:</h2>
+
+      <div id="recommendationList" class="grid-container" style="margin-top: 20px;"></div>
+
+      <div id="moreLinkContainer" style="margin-top: 20px; text-align: right;"></div>
+  </div>
+</div>
+
+<script>
+  const recommendations = {{ recommendation_map_json|safe }};
+
+  function showModal(item) {
+      const modal = document.getElementById("recommendationModal");
+      const container = document.getElementById("recommendationList");
+      const more = document.getElementById("moreLinkContainer");
+
+      const top5 = recommendations[item]?.slice(0, 5) || [];
+
+      container.innerHTML = top5.map(name => `
+        <div class="modal-card">
+          ${name}
+        </div>
+      `).join('');
+
+      if ((recommendations[item] || []).length > 5) {
+          const link = `/recommend/item-detail/?name=${encodeURIComponent(item)}`;
+          more.innerHTML = `<a class="btn-link" href="${link}">Lihat Semua Rekomendasi</a>`;
+      } else {
+          more.innerHTML = '';
+      }
+
+      modal.style.display = "block";
+  }
+
+  function closeModal() {
+      document.getElementById("recommendationModal").style.display = "none";
+  }
+</script>
+
+{% endblock %}
